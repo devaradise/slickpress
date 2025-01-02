@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { Page, PaginateFunction } from "astro";
+import { posts } from "../../lib/data";
+import { getSiteSettings } from "../../lib/wp-utils";
+import type { SimplifiedPost } from "../../lib/types";
+import { POSTS_PER_PAGE } from "astro:env/server";
+import { generatePagination } from "../../lib/utils";
+import Pagination from "../../components/common/Pagination.astro";
+import Post from "../../components/common/Post.astro";
+
+export async function getStaticPaths({
+  paginate,
+}: {
+  paginate: PaginateFunction;
+}) {
+  return paginate(posts, { pageSize: POSTS_PER_PAGE });
+}
+
+const { page }: { page: Page<SimplifiedPost> } = Astro.props;
+const settings = await getSiteSettings();
+const pagination = generatePagination(
+  posts.length,
+  page.currentPage,
+  POSTS_PER_PAGE
+);
+---
+
+<BaseLayout
+  title={`${settings.name} - Page ${page.currentPage} of ${page.lastPage}`}
+  description={`${settings.name} - Page ${page.currentPage} of ${page.lastPage}`}
+>
+  <div class="container">
+    <div class="mb-12">
+      <h2 class="text-gray-700 font-semibold text-xl mb-4 flex justify-between gap-3">
+        <div>Posts</div>
+        <div>Page {page.currentPage} of {page.lastPage}</div></h2>
+      <div
+        class="grid grid-cols-3 gap-6"
+        transition:name="post-grid"
+      >
+        {page.data.map((post) => <Post post={post} />)}
+      </div>
+      <Pagination pagination={pagination} , basePath="/" />
+    </div>
+  </div>
+</BaseLayout>

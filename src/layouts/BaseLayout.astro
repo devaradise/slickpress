@@ -1,7 +1,7 @@
 ---
-import BaseHead from './components/BaseHead.astro';
-import Header from './components/Header.astro';
-import Footer from './components/Footer.astro';
+import BaseHead from '../components/layouts/BaseHead.astro';
+import Header from '../components/layouts/Header.astro';
+import Footer from '../components/layouts/Footer.astro';
 import { loadEnv } from 'vite';
 
 const { GTAG_MEASUREMENT_ID } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), '');
@@ -14,7 +14,8 @@ const { title, description, image } = Astro.props;
 		<BaseHead title={title} description={description} image={image} />
 	</head>
 	<body
-		class="bg-white dark:bg-zinc-900 dark:text-zinc-100 pt-16 sm:pt-0"
+		class="bg-white dark:bg-zinc-900 dark:text-zinc-100 pt-16 sm:pt-0 antialiased"
+    transition:animate="fade"
 	>
 		<Header/>
 		<div class='py-8 min-h-[calc(100vh-160px)]'>

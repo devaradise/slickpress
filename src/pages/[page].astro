@@ -1,14 +1,55 @@
 ---
 import type { GetStaticPaths } from "astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { pages } from "../lib/data";
+import Prose from "../components/common/Prose.astro";
+import Author from "../components/common/Author.astro";
+import FormattedDate from "../components/common/FormattedDate.astro";
+import { Image } from "astro:assets";
 
 export const getStaticPaths = (() => {
-  
-  return [];
+  return pages.map((page) => {
+    return {
+      params: { page: page.slug },
+      props: { page },
+    };
+  });
 }) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
 
 ---
 
 <BaseLayout>
-  <div>page</div>
+  <div class="container">
+    <article>
+				<Prose>
+					<div>
+						<h1 class='leading-tight'>{page.title}</h1>
+						<div class='sm:flex sm:justify-between sm:items-start text-[var(--color-content-secondary)]'>
+							<Author picSize='sm' details={page.author} />
+							<div class='text-sm font-[500] mt-2 sm:mt-0 py-1 md:text-right'>
+								<div>
+									Published on <strong><FormattedDate date={page.date} format="long" /></strong>
+								</div>
+								{
+									page.modified && (
+										<div>
+											Last updated on{' '}
+											<strong>
+												<FormattedDate  date={page.modified} format="long" />
+											</strong>
+										</div>
+									)
+								}
+							</div>
+						</div>
+						<div class='-mx-4 md:-mx-6 lg:-mx-8 max-h-[400px] overflow-hidden'>
+							{page.featuredImage && <Image class='!rounded-none w-full m-0 mt-4 lg:mb-2' src={page.featuredImage.sourceUrl} alt={page.title} loading='eager' width={1024} height={512} />}
+						</div>
+					</div>
+					<div set:html={page.content}>
+				</Prose>
+			</article>
+  </div>
 </BaseLayout>

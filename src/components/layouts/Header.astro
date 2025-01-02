@@ -1,0 +1,54 @@
+---
+import { getEntry } from 'astro:content';
+import HeaderLink from './HeaderLink.astro';
+import { getSiteSettings } from '../../lib/wp-utils';
+import { Image } from 'astro:assets';
+import siteLogo from '@src/assets/logo.png';
+
+
+const menu = [
+  {
+		link: '/about/',
+		label: 'About'
+	},
+	{
+		link: '/news/',
+		label: 'News'
+	},
+	{
+		link: '/publications/',
+		label: 'Publications'
+	}
+];
+
+const siteSettings = await getSiteSettings();
+---
+
+<header
+	id='site-header'
+	class:list={[
+		'flex items-center w-full transition duration-300 z-[999] border-b border-gray-100'
+	]}
+>
+	<div class='container flex justify-between gap-4 items-center'>
+		<nav class='flex gap-4 items-center justify-between py-5'>
+			<h2 class='m-0'>
+				<a href='/' class='flex gap-3 items-center text-2xl font-medium text-gray-800 tracking-wide'>
+					<!-- You can use your site logo, rounded ava or simply your site name here-->
+          <Image src={siteLogo} width={64} height={64} class="w-8" alt={siteSettings.name} />
+          {siteSettings.name}
+					<!-- {SITE_TITLE} -->
+				</a>
+			</h2>
+		</nav>
+    <div class="flex px-2.5 text-gray-900 leading-tight">
+      {
+        menu.map((item) => (
+          <HeaderLink class="py-2 px-3 flex items-center" href={item.link}>
+            {item.label}
+          </HeaderLink>
+        ))
+      }
+    </div>
+	</div>
+</header>
