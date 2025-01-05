@@ -1,142 +1,121 @@
 ---
-import type { Pagination } from "../../lib/types";
+import type { Pagination } from '../../lib/types';
+import { Icon } from 'astro-icon/components';
 
 interface Props {
-  pagination: Pagination;
-  basePath: string;
+	pagination: Pagination;
+	basePath: string;
+	basePathAsFirstPage?: boolean;
 }
 
-const { pagination, basePath = "/" } = Astro.props;
+const { pagination, basePath = '/', basePathAsFirstPage = true } = Astro.props;
 ---
 
-<nav class="flex justify-center my-8 font-medium">
-  <ul class="inline-flex items-center space-x-2">
-    <!-- Previous Button -->
-    {
-      pagination.hasPrevious ? (
-        <li>
-          <a
-            href={`${basePath}${pagination.previousPage === 1 ? "" : `page/${pagination.previousPage}`}`}
-            class="block px-2 py-1.5 bg-gray-50 border border-gray-100 text-gray-600 rounded hover:bg-sky-100 hover:border-sky-300 transition duration-500"
-            aria-label="Previous Page"
-          >
-            <i data-lucide="chevron-left" />
-          </a>
-        </li>
-      ) : (
-        <li>
-          <span
-            class="block px-2 py-1.5 bg-gray-50 border border-gray-100 text-gray-400 rounded cursor-not-allowed"
-            aria-label="No Previous Page"
-          >
-            <i data-lucide="chevron-left" />
-          </span>
-        </li>
-      )
-    }
+<nav class='flex justify-center my-8 font-medium'>
+	<ul class='inline-flex items-center space-x-2'>
+		<!-- Previous Button -->
+		{
+			pagination.hasPrevious ? (
+				<li>
+					<a
+						href={`${basePath}${pagination.previousPage === 1 && basePathAsFirstPage ? '' : `page/${pagination.previousPage}`}`}
+						class='block px-3 py-2 bg-gray-50 border border-gray-100 text-gray-600 rounded hover:bg-sky-100 hover:border-sky-300 transition duration-500'
+						aria-label='Previous Page'>
+						<Icon name='chevron-left' size={18} />
+					</a>
+				</li>
+			) : (
+				<li>
+					<span
+						class='block px-3 py-2 bg-gray-50 border border-gray-100 text-gray-400 rounded cursor-not-allowed'
+						aria-label='No Previous Page'>
+						<Icon name='chevron-left' size={18} />
+					</span>
+				</li>
+			)
+		}
 
-    <!-- First Page Link -->
-    {
-      pagination.showFirst && (
-        <li>
-          <a
-            href={`${basePath}`}
-            class="px-4 py-2 bg-gray-50 border border-gray-100 text-gray-600 rounded hover:bg-sky-100 hover:border-sky-300 transition duration-500"
-          >
-            1
-          </a>
-        </li>
-      )
-    }
+		<!-- First Page Link -->
+		{
+			pagination.showFirst && (
+				<li>
+					<a
+						href={`${basePath}`}
+						class='px-4 py-2 bg-gray-50 border border-gray-100 text-gray-600 rounded hover:bg-sky-100 hover:border-sky-300 transition duration-500'>
+						1
+					</a>
+				</li>
+			)
+		}
 
-    <!-- Ellipsis before page numbers if needed -->
-    {
-      pagination.showFirst && (
-        <li>
-          <span class="px-2 text-gray-400">...</span>
-        </li>
-      )
-    }
+		<!-- Ellipsis before page numbers if needed -->
+		{
+			pagination.showFirst && (
+				<li>
+					<span class='px-2 text-gray-400'>...</span>
+				</li>
+			)
+		}
 
-    <!-- Page Numbers -->
-    {
-      pagination.pageNumbers.map((page) => (
-        <li>
-          <a
-            href={`${basePath}${page === 1 ? "" : `page/${page}`}`}
-            class={`px-4 py-2 rounded ${
-              page === pagination.currentPage
-                ? "bg-sky-500 border border-sky-500 text-white"
-                : "bg-gray-50 border border-gray-100 text-gray-600 hover:bg-sky-100 hover:border-sky-300 transition duration-500"
-            }`}
-          >
-            {page}
-          </a>
-        </li>
-      ))
-    }
+		<!-- Page Numbers -->
+		{
+			pagination.pageNumbers.map((page) => (
+				<li>
+					<a
+						href={`${basePath}page/${page}`}
+						class={`px-4 py-2 rounded ${
+							page === pagination.currentPage
+								? 'bg-sky-500 border border-sky-500 text-white'
+								: 'bg-gray-50 border border-gray-100 text-gray-600 hover:bg-sky-100 hover:border-sky-300 transition duration-500'
+						}`}>
+						{page}
+					</a>
+				</li>
+			))
+		}
 
-    <!-- Ellipsis after page numbers if needed -->
-    {
-      pagination.showLast && (
-        <li>
-          <span class="px-2 text-gray-400">...</span>
-        </li>
-      )
-    }
+		<!-- Ellipsis after page numbers if needed -->
+		{
+			pagination.showLast && (
+				<li>
+					<span class='px-2 text-gray-400'>...</span>
+				</li>
+			)
+		}
 
-    <!-- Last Page Link -->
-    {
-      pagination.showLast && (
-        <li>
-          <a
-            href={`${basePath}page/${pagination.totalPages}`}
-            class="px-4 py-2 bg-gray-50 border border-gray-100 text-gray-600 rounded hover:bg-sky-100 hover:border-sky-300 transition duration-500"
-          >
-            {pagination.totalPages}
-          </a>
-        </li>
-      )
-    }
+		<!-- Last Page Link -->
+		{
+			pagination.showLast && (
+				<li>
+					<a
+						href={`${basePath}page/${pagination.totalPages}`}
+						class='px-4 py-2 bg-gray-50 border border-gray-100 text-gray-600 rounded hover:bg-sky-100 hover:border-sky-300 transition duration-500'>
+						{pagination.totalPages}
+					</a>
+				</li>
+			)
+		}
 
-    <!-- Next Button -->
-    {
-      pagination.hasNext ? (
-        <li>
-          <a
-            href={`${basePath}page/${pagination.nextPage}`}
-            class="block px-2 py-1.5 bg-gray-50 border border-gray-100 text-gray-600 rounded hover:bg-sky-100 hover:border-sky-300 transition duration-500"
-            aria-label="Next Page"
-          >
-            <i data-lucide="chevron-right" />
-          </a>
-        </li>
-      ) : (
-        <li>
-          <span
-            class="block px-2 py-1.5 bg-gray-50 border border-gray-100 text-gray-400 rounded cursor-not-allowed"
-            aria-label="No Next Page"
-          >
-            <i data-lucide="chevron-right" />
-          </span>
-        </li>
-      )
-    }
-  </ul>
+		<!-- Next Button -->
+		{
+			pagination.hasNext ? (
+				<li>
+					<a
+						href={`${basePath}page/${pagination.nextPage}`}
+						class='block px-3 py-2 bg-gray-50 border border-gray-100 text-gray-600 rounded hover:bg-sky-100 hover:border-sky-300 transition duration-500'
+						aria-label='Next Page'>
+						<Icon name='chevron-right' size={18} />
+					</a>
+				</li>
+			) : (
+				<li>
+					<span
+						class='block px-3 py-2 bg-gray-50 border border-gray-100 text-gray-400 rounded cursor-not-allowed'
+						aria-label='No Next Page'>
+						<Icon name='chevron-right' size={18} />
+					</span>
+				</li>
+			)
+		}
+	</ul>
 </nav>
-
-<script>
-  import { createIcons, ChevronRight, ChevronLeft } from "lucide";
-
-  document.addEventListener('astro:page-load', () => {
-    createIcons({
-      icons: {
-        ChevronRight,
-        ChevronLeft,
-      },
-      attrs: {
-        "stroke-width": 1.5,
-      },
-    });
-  });
-</script>

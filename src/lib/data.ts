@@ -99,14 +99,15 @@ export const posts: SimplifiedPost[] = rawPosts.map(post => ({
   slug: post.data.slug,
   status: post.data.status,
   type: post.data.type,
-  categories: post.data.categories.map(cat => idCategoryMapping[cat.id]),
-  tags: post.data.tags.map(tag => idCategoryMapping[tag.id]),
+  categories: post.data.categories.map(cat => idCategoryMapping[cat.id]).filter(cat => !!cat),
+  tags: post.data.tags.map(tag => idTagMapping[tag.id]).filter(tag => !!tag),
   date: post.data.date,
   modified: post.data.modified,
   content: post.rendered?.html || post.data.content.rendered,
   excerpt: post.data.excerpt.rendered,
   author: idUserMapping[post.data.author.id],
-  featuredImage: post.data.featured_media && idMediaMapping[post.data.featured_media?.id]
+  featuredImage: post.data.featured_media && idMediaMapping[post.data.featured_media?.id],
+  rawPostEntry: post
 })).sort((a, b) => b.date.valueOf() - a.date.valueOf());
 
 const idPostMapping = (() => {
@@ -128,7 +129,8 @@ export const pages: SimplifiedPage[] = rawPages.map(page => ({
   content: page.data.content.rendered,
   excerpt: page.data.excerpt.rendered,
   author: idUserMapping[page.data.author.id],
-  featuredImage: page.data.featured_media && idMediaMapping[page.data.featured_media?.id]
+  featuredImage: page.data.featured_media && idMediaMapping[page.data.featured_media?.id],
+  rawPageEntry: page
 }));
 
 const idPageMapping = (() => {

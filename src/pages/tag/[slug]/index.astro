@@ -1,0 +1,50 @@
+---
+import { POSTS_PER_PAGE } from 'astro:env/server';
+import { tags, posts } from '@src/lib/data';
+import BaseLayout from '@src/layouts/BaseLayout.astro';
+import { generatePagination } from '@src/lib/utils';
+import Post from '@src/components/common/Post.astro';
+import Pagination from '@src/components/common/Pagination.astro';
+
+export const getStaticPaths = () => {
+	return tags.map((tag) => {
+		return {
+			params: { slug: tag.slug },
+			props: { tag }
+		};
+	});
+};
+
+// All paginated data is passed on the "page" prop
+const { tag }: { [x: string]: any } = Astro.props;
+const tagPosts = posts.filter((post) => post.tags.some((postCategory) => postCategory.id === tag.id));
+const tagPostsPageOne = tagPosts.slice(0, POSTS_PER_PAGE);
+const pagination = generatePagination(tagPosts.length, 1, POSTS_PER_PAGE);
+const title = `Posts tagged with ${tag.name}`;
+const subTitle = `Page ${1} of ${pagination.totalPages}`;
+---
+
+<BaseLayout title={title + ' - ' + subTitle} description={title + ' - ' + subTitle}>
+	<div class='container'>
+		<div class='mb-12'>
+			<h2 class='text-gray-700 font-semibold text-xl mb-4 flex justify-between gap-3'>
+				<div>Posts</div>
+				<div>Page 1 of {pagination.totalPages}</div>
+			</h2>
+			{
+				tagPostsPageOne.length > 0 ? (
+					<>
+						<div class='grid grid-cols-3 gap-6' transition:name='post-grid'>
+							{tagPostsPageOne.map((post) => (
+								<Post post={post} />
+							))}
+						</div>
+						<Pagination pagination={pagination} basePath={`/tag/${tag.slug}/`} />
+					</>
+				) : (
+					<div class='p-8 text-center'>No posts yet</div>
+				)
+			}
+		</div>
+	</div>
+</BaseLayout>

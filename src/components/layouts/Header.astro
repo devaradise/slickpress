@@ -12,12 +12,12 @@ const menu = [
 		label: 'About'
 	},
 	{
-		link: '/news/',
-		label: 'News'
+		link: '/sample-page/',
+		label: 'Sample Page'
 	},
 	{
-		link: '/publications/',
-		label: 'Publications'
+		link: '/privacy-policy/',
+		label: 'Privacy Policy'
 	}
 ];
 
@@ -29,6 +29,7 @@ const siteSettings = await getSiteSettings();
 	class:list={[
 		'flex items-center w-full transition duration-300 z-[999] border-b border-gray-100'
 	]}
+  transition:persist
 >
 	<div class='container flex justify-between gap-4 items-center'>
 		<nav class='flex gap-4 items-center justify-between py-5'>

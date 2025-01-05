@@ -4,6 +4,7 @@ import tailwind from '@astrojs/tailwind';
 import partytown from '@astrojs/partytown';
 import sitemap from '@astrojs/sitemap';
 import { loadEnv } from "vite";
+import icon from 'astro-icon';
 
 const { SITE, WP_REST_API_ENDPOINT } = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), "");
 
@@ -20,5 +21,5 @@ export default defineConfig({
   image: {
     domains: [(new URL(WP_REST_API_ENDPOINT)).hostname, 'secure.gravatar.com']
   },
-  integrations: [tailwind(), partytown(), sitemap()]
+  integrations: [tailwind(), partytown(), sitemap(), icon({ iconDir: 'src/assets/icons'})]
 });

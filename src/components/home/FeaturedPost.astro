@@ -1,0 +1,65 @@
+---
+import { Image } from 'astro:assets';
+import Author from '../common/Author.astro';
+import FormattedDate from '../common/FormattedDate.astro';
+import { calculateReadingTime } from '@src/lib/utils';
+import type { SimplifiedPost } from '../../lib/types';
+
+interface Props {
+	post: SimplifiedPost;
+}
+
+const { post } = Astro.props
+
+---
+
+{
+	post && (
+		<div class='grid grid-cols-2 items-center gap-4 mb-12' transition:name={`${post.slug}`}>
+			<div class='col-span-1 flex flex-col gap-4'>
+				<div class='flex gap-2 items-center' transition:name={`${post.slug}-category`}>
+					{post.categories.slice(0, 3).map((category) => (
+						<a
+							class='
+                px-3 py-1.5 rounded-md
+                leading-none whitespace-nowrap
+                bg-gray-50 border border-gray-100
+                font-medium text-gray-700 text-sm transition duration-500
+                hover:bg-sky-500 hover:text-white hover:border-sky-500
+              '
+							href={`/category/${category.slug}`}>
+							{category.name}
+						</a>
+					))}
+				</div>
+				<h1 class='text-4xl font-black capitalize text-pretty' transition:name={`${post.slug}-title`}>
+					<a href={post.slug} set:html={post.title} class='transition duration-500 hover:text-sky-600' />
+				</h1>
+				<div set:html={post.excerpt} class='text-gray-700' />
+				<div class='flex gap-4 items-center' transition:name={`${post.slug}-meta`}>
+					<Author details={post.author} picSize='md' />
+					<div class='rounded-full size-1.5 bg-gray-300' />
+					<div class='text-gray-600 text-sm'>
+						<FormattedDate date={post.date} format='long' />
+					</div>
+					<div class='rounded-full size-1.5 bg-gray-300' />
+					<div class='text-gray-600 text-sm'>{calculateReadingTime(post.content)} min read</div>
+				</div>
+			</div>
+			<div class='col-span-1 max-h-[350px] overflow-hidden rounded-2xl' transition:name={`${post.slug}-image`}>
+				{post.featuredImage && (
+					<a href={`/${post.slug}/`}>
+						<Image
+							src={post.featuredImage?.sourceUrl}
+							alt={post.title}
+							width={1000}
+							class='w-full object-cover transition-transform hover:scale-110 hover:rotate-2 duration-500'
+							height={700}
+							loading='eager'
+						/>
+					</a>
+				)}
+			</div>
+		</div>
+	)
+}

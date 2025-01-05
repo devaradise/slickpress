@@ -1,3 +1,4 @@
+import type { CollectionEntry, RenderResult } from "astro:content"
 
 export type SimplifiedPage = {
   id: string,
@@ -10,6 +11,7 @@ export type SimplifiedPage = {
   excerpt: string,
   author: SimplifiedUser,
   featuredImage?: SimplifiedMedia,
+  rawPageEntry: CollectionEntry<'pages'>,
   comments?: SimplifiedComment[],
   parent?: SimplifiedPage,
   seoTitle?: string,
@@ -31,6 +33,7 @@ export type SimplifiedPost = {
   content: string,
   excerpt: string,
   author: SimplifiedUser,
+  rawPostEntry: CollectionEntry<'posts'>,
   featuredImage?: SimplifiedMedia,
   comments?: SimplifiedComment[],
   seoTitle?: string,

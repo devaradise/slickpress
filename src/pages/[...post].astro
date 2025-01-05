@@ -1,73 +1,161 @@
 ---
-import type { GetStaticPaths } from "astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { posts } from "../lib/data";
-import Prose from "../components/common/Prose.astro";
-import Author from "../components/common/Author.astro";
-import FormattedDate from "../components/common/FormattedDate.astro";
-import { Image } from "astro:assets";
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { posts } from '../lib/data';
+import Prose from '../components/common/Prose.astro';
+import Author from '../components/common/Author.astro';
+import FormattedDate from '../components/common/FormattedDate.astro';
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import { calculateReadingTime } from '../lib/utils';
+import { SITE } from 'astro:env/server';
+import { Icon } from 'astro-icon/components';
+import Post from '../components/common/Post.astro';
 
 export const getStaticPaths = (() => {
-  return posts.map((post) => {
-    return {
-      params: { post: post.slug },
-      props: { post },
-    };
-  });
+	return posts.map((post) => {
+		return {
+			params: { post: post.slug },
+			props: { post }
+		};
+	});
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props;
+const shareUrl = SITE + '/' + post.slug + '/';
+const shareText = post.title;
 
+const relatedPosts = post.categories[0] ? posts.filter(related => related.categories.some(category => category.id === post.categories[0].id && related.id !== post.id)).slice(0, 3) : [];
+
+const { Content } = await render(post.rawPostEntry);
 ---
 
 <BaseLayout>
-  <div class="container">
-    {
-      post &&
-      <article>
-				<Prose>
-					<div>
-						<div class='flex gap-2'>
-							{
-								post.tags?.map((tag) => (
-									<a
-										class='border border-[var(--soft-border-color)] rounded-2xl
-                    text-sm text-[var(--color-content-secondary)] bg-[var(--background-color)] 
-                    no-underline px-3 py-1
-                    transition-all duration-700
-                    hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white'
-										href={`/tags/${tag.slug}`}>
-										{tag}
-									</a>
-								))
-							}
-						</div>
-						<h1 class='leading-tight'>{post.title}</h1>
-						<div class='sm:flex sm:justify-between sm:items-start text-[var(--color-content-secondary)]'>
-							<Author picSize='sm' details={post.author} />
-							<div class='text-sm font-[500] mt-2 sm:mt-0 py-1 md:text-right'>
-								<div>
-									Published on <strong><FormattedDate date={post.date} format="long" /></strong>
-								</div>
-								{
-									post.modified && (
-										<div>
-											Last updated on{' '}
-											<strong>
-												<FormattedDate  date={post.modified} format="long" />
-											</strong>
-										</div>
-									)
-								}
+	<div class='container'>
+		{
+			post && (
+				<article class='max-w-screen-lg mx-auto flex flex-col gap-6 p-4' transition:name={`${post.slug}`}>
+					<div class='max-w-screen-md mx-auto flex flex-col gap-6 items-center text-center'>
+						<div class="flex gap-3" transition:name={`${post.slug}-category`}>
+              {post.categories.slice(0, 3).map((category) => (
+                <a
+                  class='
+                    px-3 py-1.5 rounded-md
+                    leading-none whitespace-nowrap
+                    bg-gray-50 border border-gray-100
+                    font-medium text-gray-700 text-sm transition duration-500
+                    hover:bg-sky-500 hover:text-white hover:border-sky-500
+                  '
+                  href={`/category/${category.slug}`}>
+                  {category.name}
+                </a>
+              ))}
+            </div>
+            <h1 class='text-4xl font-bold text-pretty' transition:name={`${post.slug}-title`} set:html={post.title} />
+						<div class='flex gap-4 items-center' transition:name={`${post.slug}-meta`}>
+							<Author details={post.author} picSize='md' />
+							<div class='rounded-full size-1.5 bg-gray-300' />
+							<div class='text-gray-600 text-sm'>
+								<FormattedDate date={post.date} format='long' />
 							</div>
-						</div>
-						<div class='-mx-4 md:-mx-6 lg:-mx-8 max-h-[400px] overflow-hidden'>
-							{post.featuredImage && <Image class='!rounded-none w-full m-0 mt-4 lg:mb-2' src={post.featuredImage.sourceUrl} alt={post.title} loading='eager' width={1024} height={512} />}
+							<div class='rounded-full size-1.5 bg-gray-300' />
+							<div class='text-gray-600 text-sm'>{calculateReadingTime(post.content)} min read</div>
 						</div>
 					</div>
-					<div set:html={post.content}>
-				</Prose>
-			</article>
+					<div class='max-h-[492px] overflow-hidden rounded-3xl' transition:name={`${post.slug}-image`}>
+						{post.featuredImage && (
+							<Image
+								src={post.featuredImage?.sourceUrl}
+								alt={post.title}
+								width={2048}
+								class='w-full object-cover'
+								height={1024}
+								loading='eager'
+							/>
+						)}
+					</div>
+					<div class='max-w-screen-md mx-auto'>
+						<Prose>
+							<Content />
+						</Prose>
+
+						<div class='flex gap-4 justify-between'>
+							<div class='flex gap-2 mt-6'>
+								{post.tags?.map((tag) => (
+									<a
+										class='
+                      px-3 py-1.5 rounded-md
+                      leading-none whitespace-nowrap
+                      bg-gray-50 border border-gray-100
+                      font-medium text-gray-700 text-sm transition duration-500
+                      hover:bg-sky-500 hover:text-white hover:border-sky-500
+                    '
+										href={`/tag/${tag.slug}/`}>
+										# {tag.name}
+									</a>
+								))}
+							</div>
+
+							<div class='flex items-center justify-center space-x-4 mt-8'>
+								<div class='text-gray-400 text-sm font-medium'>Share to</div>
+								<a
+									href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+									target='_blank'
+									rel='noopener noreferrer'
+									class='text-gray-400 hover:text-blue-600 transition'
+									aria-label='Share on Facebook'>
+									<Icon name='facebook' class='size-5' />
+								</a>
+
+								<a
+									href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`}
+									target='_blank'
+									rel='noopener noreferrer'
+									class='text-gray-400 hover:text-black transition'
+									aria-label='Share on X (Twitter)'>
+									<Icon name='x' class='size-5' />
+								</a>
+
+								<a
+									href={`https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText)}`}
+									target='_blank'
+									rel='noopener noreferrer'
+									class='text-gray-400 hover:text-blue-500 transition'
+									aria-label='Share on LinkedIn'>
+									<Icon name='linkedin' class='size-5' />
+								</a>
+
+								<a
+									href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent(shareText)}`}
+									target='_blank'
+									rel='noopener noreferrer'
+									class='text-gray-400 hover:text-red-600 transition'
+									aria-label='Share on Pinterest'>
+									<Icon name='pinterest' class='size-5' />
+								</a>
+
+								<a
+									href={`https://reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText)}`}
+									target='_blank'
+									rel='noopener noreferrer'
+									class='text-gray-400 hover:text-orange-600 transition'
+									aria-label='Share on Reddit'>
+									<Icon name='reddit' class='size-5' />
+								</a>
+							</div>
+						</div>
+					</div>
+				</article>
+			)
+		}
+    {
+      relatedPosts.length > 0 &&
+      <div class="mt-8 border-t py-6 border-gray-100">
+        <h3 class="text-center text-2xl font-bold mb-6">Related posts</h3>
+        <div class="grid grid-cols-3 gap-6" transition:name="post-grid">
+          { relatedPosts.map(post => <Post post={post} />) }
+        </div>
+      </div>
     }
-  </div>
+	</div>
 </BaseLayout>

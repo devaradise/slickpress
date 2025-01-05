@@ -1,55 +1,121 @@
 ---
-import type { GetStaticPaths } from "astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { pages } from "../lib/data";
-import Prose from "../components/common/Prose.astro";
-import Author from "../components/common/Author.astro";
-import FormattedDate from "../components/common/FormattedDate.astro";
-import { Image } from "astro:assets";
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { pages } from '../lib/data';
+import Prose from '../components/common/Prose.astro';
+import Author from '../components/common/Author.astro';
+import FormattedDate from '../components/common/FormattedDate.astro';
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import { calculateReadingTime } from '../lib/utils';
+import { SITE } from 'astro:env/server';
+import { Icon } from 'astro-icon/components';
 
 export const getStaticPaths = (() => {
-  return pages.map((page) => {
-    return {
-      params: { page: page.slug },
-      props: { page },
-    };
-  });
+	return pages.map((page) => {
+		return {
+			params: { page: page.slug },
+			props: { page }
+		};
+	});
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+const shareUrl = SITE + '/' + page.slug + '/';
+const shareText = page.title;
 
+
+const { Content } = await render(page.rawPageEntry);
 ---
 
 <BaseLayout>
-  <div class="container">
-    <article>
-				<Prose>
-					<div>
-						<h1 class='leading-tight'>{page.title}</h1>
-						<div class='sm:flex sm:justify-between sm:items-start text-[var(--color-content-secondary)]'>
-							<Author picSize='sm' details={page.author} />
-							<div class='text-sm font-[500] mt-2 sm:mt-0 py-1 md:text-right'>
-								<div>
-									Published on <strong><FormattedDate date={page.date} format="long" /></strong>
-								</div>
-								{
-									page.modified && (
-										<div>
-											Last updated on{' '}
-											<strong>
-												<FormattedDate  date={page.modified} format="long" />
-											</strong>
-										</div>
-									)
-								}
+	<div class='container'>
+		{
+			page && (
+				<article class='max-w-screen-lg mx-auto flex flex-col gap-6 p-4' transition:name={`${page.slug}`}>
+					<div class='max-w-screen-md mx-auto flex flex-col gap-6 items-center text-center'>
+
+            <h1 class='text-4xl font-bold text-pretty' transition:name={`${page.slug}-title`} set:html={page.title} />
+						<div class='flex gap-4 items-center' transition:name={`${page.slug}-meta`}>
+							<Author details={page.author} picSize='md' />
+							<div class='rounded-full size-1.5 bg-gray-300' />
+							<div class='text-gray-600 text-sm'>
+								<FormattedDate date={page.date} format='long' />
 							</div>
-						</div>
-						<div class='-mx-4 md:-mx-6 lg:-mx-8 max-h-[400px] overflow-hidden'>
-							{page.featuredImage && <Image class='!rounded-none w-full m-0 mt-4 lg:mb-2' src={page.featuredImage.sourceUrl} alt={page.title} loading='eager' width={1024} height={512} />}
+							<div class='rounded-full size-1.5 bg-gray-300' />
+							<div class='text-gray-600 text-sm'>{calculateReadingTime(page.content)} min read</div>
 						</div>
 					</div>
-					<div set:html={page.content}>
-				</Prose>
-			</article>
-  </div>
+					<div class='max-h-[492px] overflow-hidden rounded-3xl' transition:name={`${page.slug}-image`}>
+						{page.featuredImage && (
+							<Image
+								src={page.featuredImage?.sourceUrl}
+								alt={page.title}
+								width={2048}
+								class='w-full object-cover'
+								height={1024}
+								loading='eager'
+							/>
+						)}
+					</div>
+					<div class='max-w-screen-md mx-auto'>
+						<Prose>
+							<Content />
+						</Prose>
+
+						<div class='flex gap-4 justify-end'>
+
+							<div class='flex items-center justify-center space-x-4 mt-8'>
+								<div class='text-gray-400 text-sm font-medium'>Share to</div>
+								<a
+									href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+									target='_blank'
+									rel='noopener noreferrer'
+									class='text-gray-400 hover:text-blue-600 transition'
+									aria-label='Share on Facebook'>
+									<Icon name='facebook' class='size-5' />
+								</a>
+
+								<a
+									href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`}
+									target='_blank'
+									rel='noopener noreferrer'
+									class='text-gray-400 hover:text-black transition'
+									aria-label='Share on X (Twitter)'>
+									<Icon name='x' class='size-5' />
+								</a>
+
+								<a
+									href={`https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText)}`}
+									target='_blank'
+									rel='noopener noreferrer'
+									class='text-gray-400 hover:text-blue-500 transition'
+									aria-label='Share on LinkedIn'>
+									<Icon name='linkedin' class='size-5' />
+								</a>
+
+								<a
+									href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent(shareText)}`}
+									target='_blank'
+									rel='noopener noreferrer'
+									class='text-gray-400 hover:text-red-600 transition'
+									aria-label='Share on Pinterest'>
+									<Icon name='pinterest' class='size-5' />
+								</a>
+
+								<a
+									href={`https://reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText)}`}
+									target='_blank'
+									rel='noopener noreferrer'
+									class='text-gray-400 hover:text-orange-600 transition'
+									aria-label='Share on Reddit'>
+									<Icon name='reddit' class='size-5' />
+								</a>
+							</div>
+						</div>
+					</div>
+				</article>
+			)
+		}
+	</div>
 </BaseLayout>

@@ -1,26 +1,25 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getSiteSettings } from '../lib/wp-utils';
-import FeaturedPost from '../components/pages/home/FeaturedPost.astro';
+import FeaturedPost from '../components/home/FeaturedPost.astro';
 import { posts, slugCategoryMapping } from '../lib/data';
 import PostCard from '../components/common/Post.astro';
-import Pagination from '../components/common/Pagination.astro';
-import { generatePagination } from '../lib/utils';
-import { POSTS_PER_PAGE } from 'astro:env/server';
+import { Icon } from 'astro-icon/components'
 
 const siteSettings = await getSiteSettings();
 
 const popularCategorySlugs = ['artificial-intelligence', 'gadgets', 'automotive', 'social-media', 'startup', 'security']
 const categories = popularCategorySlugs.map(slug => slugCategoryMapping[slug]).filter(cat => !!cat)
 
-const pagination = generatePagination(posts.length, 1, POSTS_PER_PAGE);
-const paginatedPosts = posts.slice(0, POSTS_PER_PAGE)
+const paginatedPosts = posts.slice(0, 6)
+
+const featuredPost = posts[0]
+
 ---
 
 <BaseLayout title={siteSettings.name} description={siteSettings.description}>
 	<div class="container">
-    <FeaturedPost source={posts} />
+    <FeaturedPost post={featuredPost} />
 
     <!-- Popular topics -->
     <div class="mb-12">
@@ -49,13 +48,19 @@ const paginatedPosts = posts.slice(0, POSTS_PER_PAGE)
 
     <!-- Latest posts -->
     <div class="mb-12">
-      <h2 class="text-gray-700 font-semibold text-xl mb-4">Latest posts</h2>
+      <div class="flex justify-between gap-4 items-center">
+        <h2 class="text-gray-700 font-semibold text-xl mb-4">Latest posts</h2>
+        <a
+          href="/page/1"
+          class="flex gap-1 font-medium leading-none items-center">
+          See all <Icon name="arrow-right" />
+        </a>
+      </div>
       <div class="grid grid-cols-3 gap-6" transition:name="post-grid">
         {
-          paginatedPosts.map(post => <PostCard post={post} />)
+          paginatedPosts.map(post => <PostCard post={post} implementViewTransitionName={post.slug !== featuredPost.slug} />)
         }
       </div>
-      <Pagination pagination={pagination}, basePath='/' />
     </div>
   </div>
 </BaseLayout>
