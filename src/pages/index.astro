@@ -17,7 +17,7 @@ const featuredPost = posts[0]
 
 ---
 
-<BaseLayout title={siteSettings.name} description={siteSettings.description}>
+<BaseLayout title={siteSettings.name} description={siteSettings.description || siteSettings.name}>
 	<div class="container">
     <FeaturedPost post={featuredPost} />
 
@@ -30,7 +30,7 @@ const featuredPost = posts[0]
             <a
               href={`/category/${category.slug}/`}
               class="
-                col-span-2 md:col-span-1 
+                col-span-3 md:col-span-1 
                 border border-gray-100 bg-gray-50
                 rounded-xl p-4
                 font-semibold text-gray-700
@@ -58,7 +58,11 @@ const featuredPost = posts[0]
       </div>
       <div class="grid grid-cols-3 gap-6" transition:name="post-grid">
         {
-          paginatedPosts.map(post => <PostCard post={post} implementViewTransitionName={post.slug !== featuredPost.slug} />)
+          paginatedPosts.map(post => 
+            <div class="col-span-3 md:col-span-1">
+              <PostCard post={post} implementViewTransitionName={post.slug !== featuredPost.slug} />
+            </div>
+          )
         }
       </div>
     </div>

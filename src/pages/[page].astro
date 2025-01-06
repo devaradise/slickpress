@@ -39,11 +39,11 @@ const { Content } = await render(page.rawPageEntry);
 	<div class='container'>
 		{
 			page && (
-				<article class='max-w-screen-lg mx-auto flex flex-col gap-6 p-4' transition:name={`${page.slug}`}>
+				<article class='max-w-screen-lg mx-auto flex flex-col gap-6 md:p-4' transition:name={`${page.slug}`}>
 					<div class='max-w-screen-md mx-auto flex flex-col gap-6 items-center text-center'>
 
-            <h1 class='text-4xl font-bold text-pretty' transition:name={`${page.slug}-title`} set:html={page.title} />
-						<div class='flex gap-4 items-center' transition:name={`${page.slug}-meta`}>
+            <h1 class='text-2xl md:text-4xl font-bold text-pretty' transition:name={`${page.slug}-title`} set:html={page.title} />
+						<div class='flex gap-4 flex-wrap items-center justify-center' transition:name={`${page.slug}-meta`}>
 							<Author details={page.author} picSize='md' />
 							<div class='rounded-full size-1.5 bg-gray-300' />
 							<div class='text-gray-600 text-sm'>
@@ -58,9 +58,9 @@ const { Content } = await render(page.rawPageEntry);
 							<Image
 								src={page.featuredImage?.sourceUrl}
 								alt={page.title}
-								width={2048}
+								width={1440}
 								class='w-full object-cover'
-								height={1024}
+								height={768}
 								loading='eager'
 							/>
 						)}
@@ -70,9 +70,8 @@ const { Content } = await render(page.rawPageEntry);
 							<Content />
 						</Prose>
 
-						<div class='flex gap-4 justify-end'>
-
-							<div class='flex items-center justify-center space-x-4 mt-8'>
+						<div class='flex gap-4 md:justify-end'>
+							<div class='flex items-center space-x-4 mt-8'>
 								<div class='text-gray-400 text-sm font-medium'>Share to</div>
 								<a
 									href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}

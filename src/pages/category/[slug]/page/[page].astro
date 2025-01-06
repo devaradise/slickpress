@@ -19,17 +19,14 @@ export async function getStaticPaths({ paginate }: { paginate: Function }) {
 }
 // All paginated data is passed on the "page" prop
 const { page, category } = Astro.props;
-const pagination = generatePagination(
-  posts.length,
-  page.currentPage,
-  POSTS_PER_PAGE
-);
+const pagination = generatePagination(posts.length, page.currentPage, POSTS_PER_PAGE);
 const title = `Posts tagged with ${category.name}`;
 const subTitle = `Page ${page.currentPage} of ${page.lastPage}`;
 if (page.currentPage === 1) {
 	return Astro.redirect('/category/' + category.slug + '/');
 }
 ---
+
 <BaseLayout title={title + ' - ' + subTitle} description={title + ' - ' + subTitle}>
 	<div class='container'>
 		<div class='mb-12'>
@@ -38,7 +35,13 @@ if (page.currentPage === 1) {
 				<div>Page {page.currentPage} of {page.lastPage}</div>
 			</h2>
 			<div class='grid grid-cols-3 gap-6' transition:name='post-grid'>
-				{page.data.map((post: SimplifiedPost) => <Post post={post} />)}
+				{
+					page.data.map((post: SimplifiedPost) => (
+						<div class='col-span-3 md:col-span-1'>
+							<Post post={post} />
+						</div>
+					))
+				}
 			</div>
 			<Pagination pagination={pagination} basePath={`/category/${category.slug}/`} />
 		</div>

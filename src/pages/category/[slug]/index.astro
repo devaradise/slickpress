@@ -31,19 +31,22 @@ const subTitle = `Page ${1} of ${pagination.totalPages}`;
 				<div>Posts</div>
 				<div>Page 1 of {pagination.totalPages}</div>
 			</h2>
-      {
+			{
 				categoryPostsPageOne.length > 0 ? (
 					<>
-            <div class='grid grid-cols-3 gap-6' transition:name='post-grid'>
-              {categoryPostsPageOne.map((post) => <Post post={post} />)}
-            </div>
-            <Pagination pagination={pagination} basePath={`/category/${category.slug}/`} />
-          </>
+						<div class='grid grid-cols-3 gap-6' transition:name='post-grid'>
+							{categoryPostsPageOne.map((post) => (
+								<div class='col-span-3 md:col-span-1'>
+									<Post post={post} />
+								</div>
+							))}
+						</div>
+						<Pagination pagination={pagination} basePath={`/category/${category.slug}/`} />
+					</>
 				) : (
 					<div class='p-8 text-center'>No posts under this category yet</div>
 				)
 			}
-
 		</div>
 	</div>
 </BaseLayout>

@@ -5,21 +5,20 @@ import type { SimplifiedUser } from '../../lib/types';
 type PicSize = 'sm' | 'md' | 'lg';
 interface Props {
 	picSize: PicSize;
-  details: SimplifiedUser
+	details: SimplifiedUser;
 }
 const { picSize, details } = Astro.props;
 
 // sizes refer to available gravatar image sizes in author_urls [24, 48, 96]
 const sizes = {
-  sm: '48', // for retina support
-  md: '48',
-  lg: '96'
-}
+	sm: '48', // for retina support
+	md: '48',
+	lg: '96'
+};
 ---
-<a
-  href={`/author/${details.slug}`}
-  class='flex gap-3 items-center leading-tight not-prose text-gray-600'>
-  <div 
+
+<a href={`/author/${details.slug}`} class='flex gap-3 items-center leading-tight not-prose text-gray-600'>
+	<div
 		class:list={[
 			'rounded-full overflow-hidden shrink-0',
 			{ 'size-6': picSize === 'sm' },
@@ -27,7 +26,12 @@ const sizes = {
 			{ 'size-12': picSize === 'lg' }
 		]}
 	>
-		<Image src={details.avatarUrls[sizes[picSize]]} alt={details.name} width={parseInt(sizes[picSize])}  height={parseInt(sizes[picSize])}/>
-  </div>
+		<Image
+			src={details.avatarUrls[sizes[picSize]]}
+			alt={`${details.name} avatar`}
+			width={parseInt(sizes[picSize])}
+			height={parseInt(sizes[picSize])}
+		/>
+	</div>
 	<div class={`${picSize === 'sm' ? 'text-sm' : ''}`}>{details.name}</div>
 </a>

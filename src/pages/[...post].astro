@@ -42,7 +42,7 @@ const { Content } = await render(post.rawPostEntry);
 	<div class='container'>
 		{
 			post && (
-				<article class='max-w-screen-lg mx-auto flex flex-col gap-6 p-4' transition:name={`${post.slug}`}>
+				<article class='max-w-screen-lg mx-auto flex flex-col gap-6 md:p-4' transition:name={`${post.slug}`}>
 					<div class='max-w-screen-md mx-auto flex flex-col gap-6 items-center text-center'>
 						<div class="flex gap-3" transition:name={`${post.slug}-category`}>
               {post.categories.slice(0, 3).map((category) => (
@@ -59,8 +59,8 @@ const { Content } = await render(post.rawPostEntry);
                 </a>
               ))}
             </div>
-            <h1 class='text-4xl font-bold text-pretty' transition:name={`${post.slug}-title`} set:html={post.title} />
-						<div class='flex gap-4 items-center' transition:name={`${post.slug}-meta`}>
+            <h1 class='text-2xl md:text-4xl font-bold text-pretty' transition:name={`${post.slug}-title`} set:html={post.title} />
+						<div class='flex gap-4 flex-wrap items-center justify-center' transition:name={`${post.slug}-meta`}>
 							<Author details={post.author} picSize='md' />
 							<div class='rounded-full size-1.5 bg-gray-300' />
 							<div class='text-gray-600 text-sm'>
@@ -70,14 +70,14 @@ const { Content } = await render(post.rawPostEntry);
 							<div class='text-gray-600 text-sm'>{calculateReadingTime(post.content)} min read</div>
 						</div>
 					</div>
-					<div class='max-h-[492px] overflow-hidden rounded-3xl' transition:name={`${post.slug}-image`}>
+					<div class='max-h-[550px] overflow-hidden rounded-3xl' transition:name={`${post.slug}-image`}>
 						{post.featuredImage && (
 							<Image
 								src={post.featuredImage?.sourceUrl}
 								alt={post.title}
-								width={2048}
+								width={1440}
 								class='w-full object-cover'
-								height={1024}
+								height={768}
 								loading='eager'
 							/>
 						)}
@@ -87,7 +87,7 @@ const { Content } = await render(post.rawPostEntry);
 							<Content />
 						</Prose>
 
-						<div class='flex gap-4 justify-between'>
+						<div class='flex flex-col md:flex-row md:gap-4 md:justify-between'>
 							<div class='flex gap-2 mt-6'>
 								{post.tags?.map((tag) => (
 									<a
@@ -104,7 +104,7 @@ const { Content } = await render(post.rawPostEntry);
 								))}
 							</div>
 
-							<div class='flex items-center justify-center space-x-4 mt-8'>
+							<div class='flex items-center space-x-4 mt-8'>
 								<div class='text-gray-400 text-sm font-medium'>Share to</div>
 								<a
 									href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
@@ -161,7 +161,7 @@ const { Content } = await render(post.rawPostEntry);
       <div class="mt-8 border-t py-6 border-gray-100">
         <h3 class="text-center text-2xl font-bold mb-6">Related posts</h3>
         <div class="grid grid-cols-3 gap-6" transition:name="post-grid">
-          { relatedPosts.map(post => <Post post={post} />) }
+          { relatedPosts.map(post => <div class="col-span-3 md:col-span-1"><Post post={post} /></div>) }
         </div>
       </div>
     }

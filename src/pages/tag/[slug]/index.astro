@@ -36,7 +36,9 @@ const subTitle = `Page ${1} of ${pagination.totalPages}`;
 					<>
 						<div class='grid grid-cols-3 gap-6' transition:name='post-grid'>
 							{tagPostsPageOne.map((post) => (
-								<Post post={post} />
+                <div class="col-span-3 md:col-span-1">
+  								<Post post={post} />
+                </div>
 							))}
 						</div>
 						<Pagination pagination={pagination} basePath={`/tag/${tag.slug}/`} />

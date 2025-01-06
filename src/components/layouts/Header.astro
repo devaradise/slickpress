@@ -31,25 +31,64 @@ const siteSettings = await getSiteSettings();
 	]}
   transition:persist
 >
-	<div class='container flex justify-between gap-4 items-center'>
+	<div class='container flex justify-between gap-4 items-center relative'>
 		<nav class='flex gap-4 items-center justify-between py-5'>
 			<h2 class='m-0'>
 				<a href='/' class='flex gap-3 items-center text-2xl font-medium text-gray-800 tracking-wide'>
 					<!-- You can use your site logo, rounded ava or simply your site name here-->
-          <Image src={siteLogo} width={64} height={64} class="w-8" alt={siteSettings.name} />
+          <Image src={siteLogo} width={64} height={64} class="w-8" alt={`${siteSettings.name} logo`} />
           {siteSettings.name}
 					<!-- {SITE_TITLE} -->
 				</a>
 			</h2>
 		</nav>
-    <div class="flex px-2.5 text-gray-900 leading-tight">
-      {
-        menu.map((item) => (
-          <HeaderLink class="py-2 px-3 flex items-center" href={item.link}>
-            {item.label}
-          </HeaderLink>
-        ))
-      }
+    <div class="flex justify-end md:justify-start px-2.5 text-gray-900 leading-tight">
+      <button id="hamburger" class="md:hidden p-2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      
+      <div id="menu" class="hidden md:flex flex-col md:flex-row z-50 md:w-auto absolute md:relative left-0 top-[100%] w-full md:top-0 bg-white md:bg-transparent border-y border-gray-100 md:border-transparent p-2 md:p-0">
+        {
+          menu.map((item) => (
+            <HeaderLink class="py-2 px-3 flex items-center hover:bg-gray-100 md:hover:bg-transparent" href={item.link}>
+              {item.label}
+            </HeaderLink>
+          ))
+        }
+      </div>
     </div>
 	</div>
 </header>
+
+<script is:inline>
+
+  document.addEventListener("astro:page-load", function() {
+    console.log('asd')
+    const hamburger = document.getElementById('hamburger');
+    const menu = document.getElementById('menu');
+
+    hamburger.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      console.log(e)
+      if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        menu.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+      }
+    });
+
+  })
+</script>

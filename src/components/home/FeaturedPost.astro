@@ -16,7 +16,7 @@ const { post } = Astro.props
 {
 	post && (
 		<div class='grid grid-cols-2 items-center gap-4 mb-12' transition:name={`${post.slug}`}>
-			<div class='col-span-1 flex flex-col gap-4'>
+			<div class='col-span-2 md:col-span-1 flex flex-col gap-4'>
 				<div class='flex gap-2 items-center' transition:name={`${post.slug}-category`}>
 					{post.categories.slice(0, 3).map((category) => (
 						<a
@@ -32,11 +32,11 @@ const { post } = Astro.props
 						</a>
 					))}
 				</div>
-				<h1 class='text-4xl font-black capitalize text-pretty' transition:name={`${post.slug}-title`}>
+				<h1 class='text-2xl md:text-4xl font-black capitalize text-pretty' transition:name={`${post.slug}-title`}>
 					<a href={post.slug} set:html={post.title} class='transition duration-500 hover:text-sky-600' />
 				</h1>
 				<div set:html={post.excerpt} class='text-gray-700' />
-				<div class='flex gap-4 items-center' transition:name={`${post.slug}-meta`}>
+				<div class='flex gap-4 flex-wrap items-center' transition:name={`${post.slug}-meta`}>
 					<Author details={post.author} picSize='md' />
 					<div class='rounded-full size-1.5 bg-gray-300' />
 					<div class='text-gray-600 text-sm'>
@@ -46,7 +46,7 @@ const { post } = Astro.props
 					<div class='text-gray-600 text-sm'>{calculateReadingTime(post.content)} min read</div>
 				</div>
 			</div>
-			<div class='col-span-1 max-h-[350px] overflow-hidden rounded-2xl' transition:name={`${post.slug}-image`}>
+			<div class='col-span-2 md:col-span-1 max-h-[350px] overflow-hidden rounded-2xl' transition:name={`${post.slug}-image`}>
 				{post.featuredImage && (
 					<a href={`/${post.slug}/`}>
 						<Image
