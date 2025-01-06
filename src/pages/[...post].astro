@@ -30,7 +30,7 @@ const relatedPosts = post.categories[0] ? posts.filter(related => related.catego
 const { Content } = await render(post.rawPostEntry);
 ---
 
-<BaseLayout>
+<BaseLayout title={post.seoTitle || post.title} description={post.metaDesc || post.excerpt} image={post.featuredImage?.sourceUrl}>
 	<div class='container'>
 		{
 			post && (

@@ -28,7 +28,7 @@ const shareText = page.title;
 const { Content } = await render(page.rawPageEntry);
 ---
 
-<BaseLayout>
+<BaseLayout title={page.seoTitle || page.title} description={page.metaDesc || page.excerpt}  image={page.featuredImage?.sourceUrl}>
 	<div class='container'>
 		{
 			page && (
