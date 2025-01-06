@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, envField } from 'astro/config';
+import { defineConfig, envField, passthroughImageService } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import partytown from '@astrojs/partytown';
 import sitemap from '@astrojs/sitemap';
@@ -7,7 +7,6 @@ import { loadEnv } from "vite";
 import icon from 'astro-icon';
 
 const { SITE, WP_REST_API_ENDPOINT } = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), "");
-
 // https://astro.build/config
 export default defineConfig({
   site: SITE,
@@ -19,7 +18,8 @@ export default defineConfig({
     }
   },
   image: {
-    domains: [(new URL(WP_REST_API_ENDPOINT)).hostname, 'secure.gravatar.com']
+    service: passthroughImageService(),
+    domains: [(new URL(WP_REST_API_ENDPOINT)).hostname, 'secure.gravatar.com'],
   },
   integrations: [tailwind(), partytown(), sitemap(), icon({ iconDir: 'src/assets/icons'})]
 });
