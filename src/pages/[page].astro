@@ -10,6 +10,7 @@ import { render } from 'astro:content';
 import { calculateReadingTime } from '../lib/utils';
 import { SITE } from 'astro:env/server';
 import { Icon } from 'astro-icon/components';
+import { optimizeImagesInsideHtmlString } from '../lib/node-utils';
 
 export const getStaticPaths = (() => {
 	return pages.map((page) => {
@@ -23,6 +24,12 @@ export const getStaticPaths = (() => {
 const { page } = Astro.props;
 const shareUrl = SITE + '/' + page.slug + '/';
 const shareText = page.title;
+
+// Ideally, the image optimization should be done in loader, but it doesnt work because of these issue:
+// https://github.com/withastro/astro/issues/12689
+// https://github.com/withastro/astro/issues/12902
+// Putting this in ./data.ts also not working as it makes Astro not building any page
+page.rawPageEntry.rendered = { ...page.rawPageEntry.rendered, html: await optimizeImagesInsideHtmlString(page.rawPageEntry.rendered?.html || '')}
 
 
 const { Content } = await render(page.rawPageEntry);

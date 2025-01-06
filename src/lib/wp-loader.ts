@@ -68,13 +68,11 @@ function makeLoader({ name, url }: { name: string; url: URL }) {
 				const item = await parseData({ id: String(rawItem.id), data: rawItem });
 				const storeEntry: DataEntry = { id: String(item.id), data: item };
 				if (item.content?.rendered) {
-          const optimizedContent = await optimizeImagesInsideHtmlString(item.content.rendered);
-          (storeEntry.data.content as any).rendered = optimizedContent;
-					storeEntry.rendered = { html: optimizedContent };
+          (storeEntry.data.content as any).rendered = item.content.rendered;
+					storeEntry.rendered = { html: item.content.rendered };
 				}
         if (item.excerpt?.rendered) {
-          const optimizedExcerpt = await optimizeImagesInsideHtmlString(item.excerpt.rendered);
-          (storeEntry.data.excerpt as any).rendered = optimizedExcerpt;
+          (storeEntry.data.excerpt as any).rendered = item.excerpt.rendered;
 				}
 				store.set(storeEntry);
 			}

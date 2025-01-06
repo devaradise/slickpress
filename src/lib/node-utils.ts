@@ -3,7 +3,7 @@
  */
 
 import { JSDOM } from 'jsdom';
-import { getConfiguredImageService, getImage } from 'astro:assets';
+import { getImage } from 'astro:assets';
 
 /**
  * Optimize images within the content
@@ -14,12 +14,6 @@ export const optimizeImagesInsideHtmlString = async (htmlString: string): Promis
   const dom = new JSDOM(htmlString);
   const doc = dom.window.document;
   const images = Array.from(doc.querySelectorAll('img'));
-  try {
-    const imageService = await getConfiguredImageService();
-    console.log({ imageService })
-  } catch (e) {
-    console.log(e)
-  }
 
   // Process images sequentially instead of concurrently
   for (const img of images) {
@@ -30,12 +24,7 @@ export const optimizeImagesInsideHtmlString = async (htmlString: string): Promis
       const imgHeight = parseInt(img.getAttribute('height') || '0', 10);
 
       if (src) {
-        console.log('Processing image:', {
-          src,
-          width: imgWidth,
-          height: imgHeight,
-          domain: new URL(src).hostname
-        });
+
         try {
           if (src.match(/\.(svg|gif)$/i)) {
             console.log('Skipping optimization for:', src);

@@ -11,6 +11,7 @@ import { calculateReadingTime } from '../lib/utils';
 import { SITE } from 'astro:env/server';
 import { Icon } from 'astro-icon/components';
 import Post from '../components/common/Post.astro';
+import { optimizeImagesInsideHtmlString } from '../lib/node-utils';
 
 export const getStaticPaths = (() => {
 	return posts.map((post) => {
@@ -27,7 +28,14 @@ const shareText = post.title;
 
 const relatedPosts = post.categories[0] ? posts.filter(related => related.categories.some(category => category.id === post.categories[0].id && related.id !== post.id)).slice(0, 3) : [];
 
+// Ideally, the image optimization should be done in loader, but it doesnt work because of these issue:
+// https://github.com/withastro/astro/issues/12689
+// https://github.com/withastro/astro/issues/12902
+// Putting this in ./data.ts also not working as it makes Astro not building any page
+post.rawPostEntry.rendered = { ...post.rawPostEntry.rendered, html: await optimizeImagesInsideHtmlString(post.rawPostEntry.rendered?.html || '')}
+
 const { Content } = await render(post.rawPostEntry);
+
 ---
 
 <BaseLayout title={post.seoTitle || post.title} description={post.metaDesc || post.excerpt} image={post.featuredImage?.sourceUrl}>

@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, envField, passthroughImageService } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import partytown from '@astrojs/partytown';
 import sitemap from '@astrojs/sitemap';
@@ -18,7 +18,7 @@ export default defineConfig({
     }
   },
   image: {
-    service: passthroughImageService(),
+    // service: passthroughImageService(),
     domains: [(new URL(WP_REST_API_ENDPOINT)).hostname, 'secure.gravatar.com'],
   },
   integrations: [tailwind(), partytown(), sitemap(), icon({ iconDir: 'src/assets/icons'})]
