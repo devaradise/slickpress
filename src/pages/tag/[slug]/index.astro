@@ -28,8 +28,8 @@ const subTitle = `Page ${1} of ${pagination.totalPages}`;
 	<div class='container'>
 		<div class='mb-12'>
 			<h2 class='text-gray-700 font-semibold text-xl mb-4 flex justify-between gap-3'>
-				<div>Posts</div>
-				<div>Page 1 of {pagination.totalPages}</div>
+				<div>{title}</div>
+				<div>{subTitle}</div>
 			</h2>
 			{
 				tagPostsPageOne.length > 0 ? (

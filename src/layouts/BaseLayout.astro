@@ -2,9 +2,8 @@
 import BaseHead from '../components/layouts/BaseHead.astro';
 import Header from '../components/layouts/Header.astro';
 import Footer from '../components/layouts/Footer.astro';
-import { loadEnv } from 'vite';
+import { UMAMI_WEBSITE_ID, GTAG_MEASUREMENT_ID } from 'astro:env/server';
 
-const { GTAG_MEASUREMENT_ID } = loadEnv(process.env.NODE_ENV || 'production', process.cwd(), '');
 const { title, description, image } = Astro.props;
 ---
 
@@ -22,21 +21,40 @@ const { title, description, image } = Astro.props;
 			<slot />
 		</div>
 		<Footer />
-		<!-- Google tag (gtag.js) -->
-    {
-      GTAG_MEASUREMENT_ID &&
+				<!-- Google tag (gtag.js) -->
+    { GTAG_MEASUREMENT_ID &&
       <>
-        <script type='text/partytown' async src={'https://www.googletagmanager.com/gtag/js?id=' + GTAG_MEASUREMENT_ID}></script>
-        <script type='text/partytown' define:vars={{ GTAG_MEASUREMENT_ID }}>
+        <script is:inline type='text/partytown' async src={'https://www.googletagmanager.com/gtag/js?id=' + GTAG_MEASUREMENT_ID}></script>
+        <script is:inline type='text/partytown' data-ga-measurement-id={GTAG_MEASUREMENT_ID} id='ga-init'>
+          const measurementId = document.getElementById('ga-init').getAttribute('data-ga-measurement-id')
           window.dataLayer = window.dataLayer || [];
           function gtag() {
             dataLayer.push(arguments);
           }
           gtag('js', new Date());
 
-          gtag('config', GTAG_MEASUREMENT_ID);
+          gtag('config', measurementId);
+          document.addEventListener('astro:page-load', () => {
+            const measurementId = document.getElementById('ga-init').getAttribute('data-ga-measurement-id')
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', measurementId);
+          });
         </script>
       </>
+    }
+    {
+      UMAMI_WEBSITE_ID &&
+      <script type='text/partytown' defer src='https://umami.devaradise.com/script.js' data-website-id={UMAMI_WEBSITE_ID}>
+        document.addEventListener("astro:page-load", () => {
+          // Run after every additional navigation by Astro
+          void window.umami?.track((props) => ({ ...props }));
+        });
+      </script>
     }
 	</body>
 </html>

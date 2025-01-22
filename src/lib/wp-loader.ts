@@ -15,7 +15,6 @@ import {
 	UserSchema,
 } from './wp-schemas.js';
 import { WP_REST_API_ENDPOINT } from 'astro:env/server';
-import { optimizeImagesInsideHtmlString } from './node-utils.js';
 
 type DataEntry = Parameters<DataStore['set']>[0];
 

@@ -67,7 +67,6 @@ const siteSettings = await getSiteSettings();
 <script is:inline>
 
   document.addEventListener("astro:page-load", function() {
-    console.log('asd')
     const hamburger = document.getElementById('hamburger');
     const menu = document.getElementById('menu');
 
@@ -76,7 +75,6 @@ const siteSettings = await getSiteSettings();
     });
 
     document.addEventListener('click', (e) => {
-      console.log(e)
       if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
         menu.classList.add('hidden');
       }

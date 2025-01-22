@@ -14,7 +14,9 @@ export default defineConfig({
     schema: {
       SITE: envField.string({ context: "server", access: "public", default: 'http://localhost:4321' }),
       WP_REST_API_ENDPOINT: envField.string({ context: "server", access: "public", default: 'https://wordpress.org/news/wp-json' }),
-      POSTS_PER_PAGE: envField.number({ context: 'server', access: "public", default: 6 })
+      POSTS_PER_PAGE: envField.number({ context: 'server', access: "public", default: 6 }),
+      UMAMI_WEBSITE_ID: envField.string({ context: 'server', access: "public", optional: true }),
+      GTAG_MEASUREMENT_ID: envField.string({ context: 'server', access: "public", optional: true }),
     }
   },
   image: {

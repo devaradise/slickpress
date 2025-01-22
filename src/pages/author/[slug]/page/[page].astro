@@ -1,29 +1,29 @@
 ---
 import { POSTS_PER_PAGE } from 'astro:env/server';
 import BaseLayout from '@src/layouts/BaseLayout.astro';
-import { tags, posts } from '@src/lib/data';
+import { users, posts } from '@src/lib/data';
 import Post from '@src/components/common/Post.astro';
 import Pagination from '@src/components/common/Pagination.astro';
 import { generatePagination } from '@src/lib/utils';
 import type { SimplifiedPost } from '@src/lib/types';
 
 export async function getStaticPaths({ paginate }: { paginate: Function }) {
-	return tags.flatMap((tag) => {
-		const filteredPosts = posts.filter((post) => post.tags.some((postCategory) => postCategory.id === tag.id));
+	return users.flatMap((user) => {
+		const filteredPosts = posts.filter((post) => post.author.id === user.id);
 		return paginate(filteredPosts, {
-			params: { slug: tag.slug },
-			props: { tag: tag },
+			params: { slug: user.slug },
+			props: { user: user },
 			pageSize: POSTS_PER_PAGE
 		});
 	});
 }
 // All paginated data is passed on the "page" prop
-const { page, tag } = Astro.props;
+const { page, user } = Astro.props;
 const pagination = generatePagination(posts.length, page.currentPage, POSTS_PER_PAGE);
-const title = `Posts tagged with ${tag.name}`;
+const title = `Posts written by ${user.name}`;
 const subTitle = `Page ${page.currentPage} of ${page.lastPage}`;
 if (page.currentPage === 1) {
-	return Astro.redirect('/tag/' + tag.slug + '/');
+	return Astro.redirect('/author/' + user.slug + '/');
 }
 ---
 
@@ -44,7 +44,7 @@ if (page.currentPage === 1) {
 								</div>
 							))}
 						</div>
-						<Pagination pagination={pagination} basePath={`/tag/${tag.slug}/`} />
+						<Pagination pagination={pagination} basePath={`/author/${user.slug}/`} />
 					</>
 				) : (
 					<div class='p-8 text-center'>No posts yet</div>

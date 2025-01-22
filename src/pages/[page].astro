@@ -35,7 +35,7 @@ page.rawPageEntry.rendered = { ...page.rawPageEntry.rendered, html: await optimi
 const { Content } = await render(page.rawPageEntry);
 ---
 
-<BaseLayout title={page.seoTitle || page.title} description={page.metaDesc || page.excerpt}  image={page.featuredImage?.sourceUrl}>
+<BaseLayout title={decodeURIComponent(page.seoTitle || page.title || '')} description={page.metaDesc || page.excerpt}  image={page.featuredImage?.sourceUrl}>
 	<div class='container'>
 		{
 			page && (
@@ -61,6 +61,7 @@ const { Content } = await render(page.rawPageEntry);
 								width={1440}
 								class='w-full object-cover'
 								height={768}
+                decoding="auto"
 								loading='eager'
 							/>
 						)}

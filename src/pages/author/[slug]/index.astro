@@ -1,26 +1,26 @@
 ---
 import { POSTS_PER_PAGE } from 'astro:env/server';
-import { categories, posts } from '@src/lib/data';
+import { users, posts } from '@src/lib/data';
 import BaseLayout from '@src/layouts/BaseLayout.astro';
 import { generatePagination } from '@src/lib/utils';
 import Post from '@src/components/common/Post.astro';
 import Pagination from '@src/components/common/Pagination.astro';
 
 export const getStaticPaths = () => {
-	return categories.map((category) => {
+	return users.map((user) => {
 		return {
-			params: { slug: category.slug },
-			props: { category }
+			params: { slug: user.slug },
+			props: { user }
 		};
 	});
 };
 
 // All paginated data is passed on the "page" prop
-const { category }: { [x: string]: any } = Astro.props;
-const categoryPosts = posts.filter((post) => post.categories.some((postCategory) => postCategory.id === category.id));
-const categoryPostsPageOne = categoryPosts.slice(0, POSTS_PER_PAGE);
-const pagination = generatePagination(categoryPosts.length, 1, POSTS_PER_PAGE);
-const title = `Posts categorized in ${category.name}`;
+const { user }: { [x: string]: any } = Astro.props;
+const userPosts = posts.filter((post) => post.author.id === user.id);
+const userPostsPageOne = userPosts.slice(0, POSTS_PER_PAGE);
+const pagination = generatePagination(userPosts.length, 1, POSTS_PER_PAGE);
+const title = `Posts written by ${user.name}`;
 const subTitle = `Page ${1} of ${pagination.totalPages}`;
 ---
 
@@ -32,19 +32,19 @@ const subTitle = `Page ${1} of ${pagination.totalPages}`;
 				<div>{subTitle}</div>
 			</h2>
 			{
-				categoryPostsPageOne.length > 0 ? (
+				userPostsPageOne.length > 0 ? (
 					<>
 						<div class='grid grid-cols-3 gap-6' transition:name='post-grid'>
-							{categoryPostsPageOne.map((post) => (
-								<div class='col-span-3 md:col-span-1'>
-									<Post post={post} />
-								</div>
+							{userPostsPageOne.map((post) => (
+                <div class="col-span-3 md:col-span-1">
+  								<Post post={post} />
+                </div>
 							))}
 						</div>
-						<Pagination pagination={pagination} basePath={`/category/${category.slug}/`} />
+						<Pagination pagination={pagination} basePath={`/author/${user.slug}/`} />
 					</>
 				) : (
-					<div class='p-8 text-center'>No posts under this category yet</div>
+					<div class='p-8 text-center'>No posts under this user yet</div>
 				)
 			}
 		</div>

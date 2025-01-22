@@ -38,7 +38,7 @@ const { Content } = await render(post.rawPostEntry);
 
 ---
 
-<BaseLayout title={post.seoTitle || post.title} description={post.metaDesc || post.excerpt} image={post.featuredImage?.sourceUrl}>
+<BaseLayout title={decodeURIComponent(post.seoTitle || post.title || '')} description={post.metaDesc || post.excerpt} image={post.featuredImage?.sourceUrl}>
 	<div class='container'>
 		{
 			post && (
@@ -78,6 +78,7 @@ const { Content } = await render(post.rawPostEntry);
 								width={1440}
 								class='w-full object-cover'
 								height={768}
+                decoding="auto"
 								loading='eager'
 							/>
 						)}
